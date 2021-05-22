@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Twitter Bot</title>
+</head>
+<body>
+<style>
+</style>
+<a class="twitter-timeline" href="https://twitter.com/smile_plz12">Tweets by Smile-Plz</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+<script>
+
+  window.onload = (function(){
+
+    var tweet = document.getElementById("tweet");
+    var id = tweet.getAttribute("tweetID");
+
+    twttr.widgets.createTweet(
+      id, tweet, 
+      {
+        conversation : 'none',    // or all
+        cards        : 'hidden',  // or visible 
+        linkColor    : '#ff0000', // default is blue
+        theme        : 'dark'    // or dark
+      })
+    .then (function (el) {
+      el.contentDocument.querySelector(".footer").style.display = "none";
+    });
+
+  });
+
+</script>	
+</body>
+</html>

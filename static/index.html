@@ -7,29 +7,19 @@
 </head>
 <body>
 <style>
+  body{
+    background-color: rgb(40, 40, 40);
+  }
+  .twitter-timeline-rendered {
+    margin-left: 350px;
+    display: flex;
+}
 </style>
-<a class="twitter-timeline" href="https://twitter.com/smile_plz12">Tweets by Smile-Plz</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
-<!-- <script>
+<div class="container">
+<a class="twitter-timeline timeline" data-lang="en" data-align="center" data-dnt="true" data-theme="dark" href="https://twitter.com/smile_plz12">Tweets by smile_plz12</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<script>
 
-  window.onload = (function(){
-
-    var tweet = document.getElementById("tweet");
-    var id = tweet.getAttribute("tweetID");
-
-    twttr.widgets.createTweet(
-      id, tweet, 
-      {
-        conversation : 'none',    // or all
-        cards        : 'hidden',  // or visible 
-        linkColor    : '#ff0000', // default is blue
-        theme        : 'dark'    // or dark
-      })
-    .then (function (el) {
-      el.contentDocument.querySelector(".footer").style.display = "none";
-    });
-
-  });
-
-</script>	 -->
+</script>	 
 </body>
 </html>

@@ -17,24 +17,29 @@ def create_api():
   api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
   return api
 
-def accessapi():
-    URL ="https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
-    r= requests.get(url=URL)
-    quote = json.loads(r.content)
-    if quote["quoteAuthor"] is None:
+def getquote():
+    URL = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
+    raw = requests.get(url=URL)
+    quote = json.loads(raw.content)
+    if quote["quoteText"].strip()=="":
+      sleep(5)
+      return getquote()
+    if quote["quoteAuthor"].strip()=="":
       quote["quoteAuthor"] = "Unknown"
     author = "By "+quote["quoteAuthor"]
     tweettopublish=quote["quoteText"]+"\n"+author
     return tweettopublish
 
 def main():  
-  api=create_api()
+  try:
+    api=create_api()
+  except Exception as e:
+    print(f"Exception encountered in connecting with Twitter.\n{e}")  
   while True:
-    quote = accessapi()
+    quote = getquote()
     api.update_status(quote) 
     print(quote)
-    sleep_time = random.randint(1800,3200)
+    sleep_time = random.randint(1800,3000)
     sleep(sleep_time)
-
 if __name__ == "__main__":
     main()

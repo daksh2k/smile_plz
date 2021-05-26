@@ -20,13 +20,17 @@ def create_api():
 def getquote():
     URL = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
     raw = requests.get(url=URL)
+    if raw.status_code != 200:
+      print(f"Cannot get the quote (HTTP {raw.status_code}): {raw.text}\nAPI may be down!")
+      sleep(120)
+      return getquote()
     quote = json.loads(raw.content)
     if quote["quoteText"].strip()=="":
       sleep(5)
       return getquote()
     if quote["quoteAuthor"].strip()=="":
       quote["quoteAuthor"] = "Unknown"
-    author = "By "+quote["quoteAuthor"]
+    author = "-"+quote["quoteAuthor"]
     tweettopublish=quote["quoteText"]+"\n"+author
     return tweettopublish
 
@@ -36,9 +40,9 @@ def main():
   except Exception as e:
     print(f"Exception encountered in connecting with Twitter.\n{e}")  
   while True:
-    quote = getquote()
-    api.update_status(quote) 
-    print(quote)
+    tweet = getquote()
+    api.update_status(tweet) 
+    print(tweet)
     sleep_time = random.randint(1800,3000)
     sleep(sleep_time)
 if __name__ == "__main__":

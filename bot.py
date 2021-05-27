@@ -24,7 +24,12 @@ def getquote():
       print(f"Cannot get the quote (HTTP {raw.status_code}): {raw.text}\nAPI may be down!")
       sleep(120)
       return getquote()
-    quote = json.loads(raw.content)
+    try:
+      quote = json.loads(raw.content)
+    except Exception as e:
+      print(f"Invalid json \n{e}")
+      sleep(5)
+      return getquote()  
     if quote["quoteText"].strip()=="":
       sleep(5)
       return getquote()

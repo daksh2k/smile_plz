@@ -25,9 +25,9 @@ def getquote():
       sleep(120)
       return getquote()
     try:
-      quote = json.loads(raw.content)
+      quote = json.loads(raw.text.replace("\\",""))
     except Exception as e:
-      print(f"Invalid json \n{e}")
+      print(f"Exception:\n{e}\nRetrying again...")
       sleep(5)
       return getquote()  
     if quote["quoteText"].strip()=="":

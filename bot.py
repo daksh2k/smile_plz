@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import random
 from pymongo import MongoClient
-import keep_alive
+# import keep_alive
 
 def create_api():
   load_dotenv()  
@@ -69,7 +69,7 @@ def getquote(client):
 def main():  
   try:
     api=create_api()
-    keep_alive.keep_alive()
+    # keep_alive.keep_alive()
     client = MongoClient("mongodb+srv://"+os.environ.get("mongo_us")+":"+os.environ.get("mongo_pw")+"@test.jz2wo.mongodb.net/tweetbot?retryWrites=true&w=majority")
   except Exception as e:
     print(f"Exception encountered in connecting with Twitter.\n{e}")  

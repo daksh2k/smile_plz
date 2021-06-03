@@ -38,7 +38,7 @@ def check_dup(tweet,client):
     return True  
 
 def getquote(client):
-    client = MongoClient("mongodb+srv://"+os.environ.get("mongo_us")+":"+os.environ.get("mongo_pw")+"@test.jz2wo.mongodb.net/tweetbot?retryWrites=true&w=majority")
+    client = client
     URL = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
     raw = requests.get(url=URL)
     if raw.status_code != 200:
@@ -48,7 +48,7 @@ def getquote(client):
     try:
       quote = json.loads(raw.text.replace("\\",""))
     except Exception as e:
-      print(f"Exception:\n{e}\nRetrying again...")
+      print(f"{raw.text}\nException:\n{e}\nRetrying again...")
       sleep(5)
       return getquote(client)  
     if quote["quoteText"].strip()=="":
@@ -69,7 +69,7 @@ def getquote(client):
 def main():  
   try:
     api=create_api()
-    client = MongoClient("mongodb+srv://"+os.environ.get("mongo_us")+":"+os.environ.get("mongo_pw")+"@test.jz2wo.mongodb.net/tweetbot?retryWrites=true&w=majority")
+    client = MongoClient(os.environ.get("database_uri"))
   except Exception as e:
     print(f"Exception encountered in connecting with Twitter.\n{e}")  
   while True:

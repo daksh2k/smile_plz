@@ -20,12 +20,18 @@ def create_api():
   return api
 
 #Insert tweet in Database
-def insert_tweet(tweet,client):
+def insert_tweet(tweet,client,ind):
   db = client.tweetbot
   coll = db.tweets
+  tagsrepl =["\n#quotes #wisdom #nature #life #motivation #inspiration",
+  "\n#quotes #nature #life #wisdom #motivation",
+  "\n#quotes #wisdom #nature #life #inspiration",
+  "\n#quotes #wisdom #nature #motivation #inspiration",
+  "\n#quotes #wisdom #life #motivation #inspiration",
+  "\n#quotes #nature #life #motivation #inspiration"]
   twin = {}
   twin["tweetid"] = tweet.id
-  twin["tweetText"] = tweet.full_text.replace("By ","-")
+  twin["tweetText"] = tweet.full_text.replace(tagsrepl[ind],"")
   twin["createdDate"] = tweet.created_at
   coll.insert_one(twin)
 
@@ -98,10 +104,17 @@ def main():
     print(f"Exception encountered in connecting with Twitter.\n{e}")  
   while True:
     tweet = getquote(client)
-    twin = api.update_status(tweet,tweet_mode="extended")
-    insert_tweet(twin,client)
-    print(tweet)
-    sleep_time = random.randint(2700,3300)
+    tags = ["\n#quotes #wisdom #nature #life #motivation #inspiration",
+    "\n#quotes #nature #life #wisdom #motivation",
+    "\n#quotes #wisdom #nature #life #inspiration",
+    "\n#quotes #wisdom #nature #motivation #inspiration",
+    "\n#quotes #wisdom #life #motivation #inspiration",
+    "\n#quotes #nature #life #motivation #inspiration"]
+    ind = random.randint(0,5)
+    twin = api.update_status(tweet+tags[ind],tweet_mode="extended")
+    insert_tweet(twin,client,ind)
+    print(twin.full_text)
+    sleep_time = random.randint(2400,3000)
     sleep(sleep_time)
 
 if __name__ == "__main__":

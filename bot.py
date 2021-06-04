@@ -4,6 +4,7 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+import sys
 import random
 from pymongo import MongoClient
 
@@ -20,18 +21,12 @@ def create_api():
   return api
 
 #Insert tweet in Database
-def insert_tweet(tweet,client,ind):
+def insert_tweet(tweet,client,to_add):
   db = client.tweetbot
   coll = db.tweets
-  tagsrepl =["\n#quotes #wisdom #nature #life #motivation #inspiration",
-  "\n#quotes #nature #life #wisdom #motivation",
-  "\n#quotes #wisdom #nature #life #inspiration",
-  "\n#quotes #wisdom #nature #motivation #inspiration",
-  "\n#quotes #wisdom #life #motivation #inspiration",
-  "\n#quotes #nature #life #motivation #inspiration"]
   twin = {}
   twin["tweetid"] = tweet.id
-  twin["tweetText"] = tweet.full_text.replace(tagsrepl[ind],"")
+  twin["tweetText"] = tweet.full_text.replace(to_add,"")
   twin["createdDate"] = tweet.created_at
   coll.insert_one(twin)
 
@@ -41,10 +36,7 @@ def check_dup(tweet,client):
   coll = db.tweets
   doc_cursor = coll.find({'tweetText': tweet})
   doc_list = list(doc_cursor)
-  if len(doc_list) == 0:
-    return False
-  else:
-    return True  
+  return len(doc_list) != 0
 
 #Get Quote and parse it
 def getquote(client):
@@ -101,18 +93,22 @@ def main():
     api=create_api()
     client = MongoClient(os.environ.get("database_uri"))
   except Exception as e:
-    print(f"Exception encountered in connecting with Twitter.\n{e}")  
+    print(f"Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{e}") 
+    sys.exit()
   while True:
     tweet = getquote(client)
-    tags = ["\n#quotes #wisdom #nature #life #motivation #inspiration",
-    "\n#quotes #nature #life #wisdom #motivation",
-    "\n#quotes #wisdom #nature #life #inspiration",
-    "\n#quotes #wisdom #nature #motivation #inspiration",
-    "\n#quotes #wisdom #life #motivation #inspiration",
-    "\n#quotes #nature #life #motivation #inspiration"]
-    ind = random.randint(0,5)
-    twin = api.update_status(tweet+tags[ind],tweet_mode="extended")
-    insert_tweet(twin,client,ind)
+    tags = ("#nature","#life","#wisdom","#happiness","#motivation","#inspiration","#laugh","#love","#wholesome","#cheerful",
+      "#live","#smile","#inspire","#quoteoftheday","#thoughts","#quotesdaily","#quoteshourly","#lifequotes","#imagine","#quote",
+      "#reality","#quotesoftheday","#happy","#successquotes","#quotestoliveby","#motivationalquotes","#mindset","#goals")
+    if len(tweet)>=180:
+      rand_tags = random.sample(tags,random.randint(2,4))
+    elif len(tweet)<=80:
+      rand_tags = random.sample(tags,random.randint(6,8))
+    else:
+      rand_tags = random.sample(tags,random.randint(4,6))  
+    to_add = "\n#quotes " + ' '.join(rand_tags)
+    twin = api.update_status(tweet+to_add,tweet_mode="extended")
+    insert_tweet(twin,client,to_add)
     print(twin.full_text)
     sleep_time = random.randint(2400,3000)
     sleep(sleep_time)

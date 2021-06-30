@@ -69,6 +69,13 @@ def getquote(client):
     else:
       return tweettopublish
 
+# Follow back every user
+def follow_followers(api):
+    for follower in tweepy.Cursor(api.followers).items():
+        if not follower.following:
+            print(f"Following {follower.name}")
+            follower.follow()
+
 # Make the text bold, italic or bolditalic      
 def textmanup(input_text,typem="bold"):
     chars = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789"
@@ -96,21 +103,25 @@ def main():
     print(f"Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{e}") 
     sys.exit()
   while True:
+    try:
+      follow_followers(api)
+    except:
+      pass
     tweet = getquote(client)
     tags = ("#nature","#life","#wisdom","#happiness","#motivation","#inspiration","#laugh","#love","#wholesome","#cheerful",
       "#live","#smile","#inspire","#quoteoftheday","#thoughts","#quotesdaily","#quoteshourly","#lifequotes","#imagine","#quote",
       "#reality","#quotesoftheday","#happy","#successquotes","#quotestoliveby","#motivationalquotes","#mindset","#goals")
-    if len(tweet)>=180:
-      rand_tags = random.sample(tags,random.randint(2,4))
-    elif len(tweet)<=80:
-      rand_tags = random.sample(tags,random.randint(6,8))
+    if len(tweet) >= 120:
+      rand_tags = random.sample(tags,1)
+    elif len(tweet) <= 40:
+      rand_tags = random.sample(tags,3)
     else:
-      rand_tags = random.sample(tags,random.randint(4,6))  
+      rand_tags = random.sample(tags,2)  
     to_add = "\n#quotes " + ' '.join(rand_tags)
     twin = api.update_status(tweet+to_add,tweet_mode="extended")
     insert_tweet(twin,client,to_add)
     print(twin.full_text)
-    sleep_time = random.randint(2400,3000)
+    sleep_time = random.randint(60*50, 60*58)
     sleep(sleep_time)
 
 if __name__ == "__main__":

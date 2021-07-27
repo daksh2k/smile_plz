@@ -9,7 +9,7 @@ def update_count(doc,coll):
 
 #Return the quote with proper formatting
 def parse_doc(doc):
-    tags_list = [tag.strip().replace(" ","") for tag in doc["tags"].strip().split(',')]
+    tags_list = [tag.strip().replace(" ","").replace("-","_") for tag in doc["tags"].strip().split(',')]
     quote  = doc["text"].strip()
     auth = doc["author"].strip().split(',')[0]
     quote += "\n-"+auth.strip() 
@@ -39,7 +39,7 @@ def main(client):
             update_count(doc,coll)
         except Exception as e:
             print(f"Error in Updating tcount in db\n{e}")
-    if len(quote)>545:
+    if len(quote)>540:
         sleep(3)
         print(f"Very long quote! {len(quote)} words\n{quote}\nGetting again!")
         return main(client)

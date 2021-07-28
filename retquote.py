@@ -12,7 +12,7 @@ def parse_doc(doc):
     tags_list = [tag.strip().replace(" ","").replace("-","_") for tag in doc["tags"].strip().split(',')]
     quote  = doc["text"].strip()
     auth = doc["author"].strip().split(',')[0]
-    quote += "\n-"+auth.strip() 
+    quote += "\n–"+auth.strip() 
     try:
       source = doc["author"].strip().split(',')[1]
       quote+=f" ({source.strip()})"

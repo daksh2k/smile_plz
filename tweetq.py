@@ -3,8 +3,8 @@ import random
 
 #When tweet is longer than 280 chars
 def tweet_with_repl(api,q1,q2):
-    q1 = q1[:279]
-    q2 = q2[:279]
+    q1 = q1[:280]
+    q2 = q2[:280]
     t1 = api.update_status(status=q1,tweet_mode="extended")
     if len(q2)<30:
       return t1,None
@@ -13,20 +13,20 @@ def tweet_with_repl(api,q1,q2):
 
 # Divide tweet for tweeting 
 def partition_quote(quote):
-    pattern = re.compile(r"^(.{250}[^\.\,\;\:\-\_\n\#\!\@\$\%\^\&\*\(\)\{\}\[\]\\\/\?\<\>\'\"\|\+]*)(.*)",re.S)
+    pattern = re.compile(r"^(.{250}[^\.\,\;\:\-\_\n\#\!\@\$\%\^\&\*\(\)\{\}\[\]\\\/\?\<\>\'\"\|\+\—\–\·\°\✓\•]*)(.*)",re.S)
     quote_re = re.search(pattern,quote)
     return quote_re
 
 # Default tweet method   
 def tweet_quote(api,quote):
-    append_to_s1 = (",",".",";",":",")","}","]","?","!","|","'","\"")
+    append_to_s1 = (",",".",";",":",")","}","]","?","!","|","'","\"","—","–","·","°","✓","•")
     if len(quote)<278:
       tweet = api.update_status(quote,tweet_mode="extended")
       return tweet,None
     quote_re = partition_quote(quote)
     if quote_re is None:
-      s1_quote = quote[:272]+" (1/2)"
-      s2_quote = quote[272:]+" (2/2)"
+      s1_quote = quote[:274]+" (1/2)"
+      s2_quote = quote[274:]+" (2/2)"
     else: 
       if len(quote_re.groups())<2:
         s1_quote = quote_re.group(1)+" (1/2)"

@@ -18,9 +18,14 @@ def parse_doc(doc):
       quote+=f" ({source.strip()})"
     except IndexError:
       pass
-    if len(tags_list)>3:
-        tags_list = random.sample(tags_list,3)
-    tags = "\n#quotes #"+' #'.join(tags_list)
+    tags_list = random.sample(tags_list,len(tags_list))
+    tags_list_f = []
+    for tag in tags_list:
+        if len(tags_list_f)==3:
+            break
+        if len(tag)<15:
+           tags_list_f.append(tag)    
+    tags = "\n#quotes #"+' #'.join(tags_list_f)
     quote += tags
     return quote
 

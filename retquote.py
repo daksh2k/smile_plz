@@ -25,7 +25,14 @@ def parse_doc(doc):
             break
         if len(tag)<15:
            tags_list_f.append(tag)    
-    tags = "\n#quotes #"+' #'.join(tags_list_f)
+    if not tags_list_f:
+        for tag in tags_list:
+          if len(tags_list_f)==2:
+             break
+          tags_list_f.append(tag)
+    tags = "\n#quotes #"+" #".join(tags_list_f)
+    if tags[-2:]==" #":
+        tags = tags[:-2]
     quote += tags
     return quote
 

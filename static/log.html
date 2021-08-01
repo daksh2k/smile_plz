@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Twitter Bot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="shortcut icon" type="image/x-icon" href="static/favicon.ico">
+</head>
+<body>
+<style>
+body{
+  background-color: rgb(30, 30, 30);
+}
+button {
+   margin: auto !important;
+   display:block !important;
+}
+.card{
+  background-color: rgb(34, 40, 46);
+  margin: 2rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  box-shadow: .25rem .5rem 1rem rgba(19,132,150,.10);
+}
+.dl-button{
+  margin: 2rem auto;
+}
+</style>
+<h1 class="log text-center text-white">Log {{log_date}}</h1>
+<div class="dl-button"><button type="button" class="btn btn-info log-download">Download Log</button></div>
+<div class="container">
+    <div class="row row-cols-1">
+        <div class="cols"><div class="card"><div class="card-body text-success">
+              <h3 class="card-title text-center">Summary</h3>
+              <p class="card-text">Totals tweets Sent Today: {{ log_list|length }}</p>
+        </div></div></div>
+        {% for session in log_list %}
+        <div class="cols"> <div class="card"><div class="card-body text-white">
+              {% set sent_time=session[0].split('.')[1].split(']')[0].split(' ') %}
+              <h4 class="card-title text-center"> New Tweet Sent At {{ sent_time[2]+" "+sent_time[3] }}</h4>  
+              {% for line in session %}
+                  <p class="card-text"> {{ line }} </p>  
+              {% endfor %}
+        </div></div></div>
+        {% endfor %} 
+    </div>
+</div>
+<script>
+  document.querySelector(".log-download").addEventListener('click',() =>{
+    window.location.href = '{{ dl_href }}';
+});
+</script>
+</body>
+</html>

@@ -1,11 +1,17 @@
 from bson import ObjectId
 from time import sleep
 import random
+import datetime
+
+# Return Current Date and Time
+def current_time():
+  return datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30))).strftime('[%d/%b/%Y %I:%M:%S %p] ')
 
 #Update tweetcount in quotes DB
 def update_count(doc,coll):
     new_value = {'$inc' :{'tcount' : 1}}
-    coll.update_one({'_id': ObjectId(doc["_id"])},new_value)  
+    coll.update_one({'_id': ObjectId(doc["_id"])},new_value)
+    print(f"{current_time()}Successfully updated in DB!")  
 
 #Return the quote with proper formatting
 def parse_doc(doc):
@@ -14,8 +20,9 @@ def parse_doc(doc):
     auth = doc["author"].strip().split(',')[0]
     quote += "\n–"+auth.strip() 
     try:
-      source = doc["author"].strip().split(',')[1]
-      quote+=f" ({source.strip()})"
+      source = doc["author"].strip().split(',')[1].strip()
+      if len(quote+source)<550:
+        quote+=f" ({source})"
     except IndexError:
       pass
     tags_list = random.sample(tags_list,len(tags_list))
@@ -33,7 +40,9 @@ def parse_doc(doc):
     tags = "\n#quotes #"+" #".join(tags_list_f)
     if tags[-2:]==" #":
         tags = tags[:-2]
-    quote += tags
+    if len(quote+tags)<550:
+      quote += tags
+    print(f"{current_time()}Returned quote from DB: {quote}")
     return quote
 
 #Get quote from a very large dataset(Around 500k) 
@@ -44,15 +53,15 @@ def main(client):
         try:
             quote = parse_doc(doc)
         except Exception as e:
-            print(f"Error parsing doc/quote\n{e}")
+            print(f"{current_time()}Error parsing doc quote\n{e}")
             sleep(3)
             return main(client)     
         try: 
             update_count(doc,coll)
         except Exception as e:
-            print(f"Error in Updating tcount in db\n{e}")
-    if len(quote)>540:
+            print(f"{current_time()}Error in Updating tcount in db\n{e}")
+    if len(quote)>560:
         sleep(3)
-        print(f"Very long quote! {len(quote)} words\n{quote}\nGetting again!")
+        print(f"{current_time()}Very long quote! {len(quote)} words\n{quote}\nGetting again!")
         return main(client)
     return quote  

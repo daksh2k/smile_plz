@@ -1,14 +1,16 @@
 import tweepy 
-from time import sleep
 import requests
 import json
 import os
 import sys
 import random
+import datetime
 
 from dotenv import load_dotenv
+from time import sleep
 from pymongo import MongoClient
 
+# from keep_alive import keep_alive
 import retquote as rq
 import tweetq as tq
 
@@ -89,6 +91,7 @@ def main():
   try:
     api=create_api()
     client = MongoClient(os.environ.get("database_uri"))
+    # keep_alive()
   except Exception as e:
     print(f"Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{e}") 
     sys.exit()

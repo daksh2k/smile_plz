@@ -24,9 +24,9 @@ def tweet_with_repl(api,q1,q2):
 # Try reducing size by splitting and replacing
 def reduce_size(qt):
     i=0
-    split_char_list =  ("#","(","\n","\"","'",",",".")
+    split_char_list =  ("#","(","\n",".",",","\"","'")
     while len(qt)>280 and i<len(split_char_list):
-        print(f"{current_time()}Tweet larger than 280 so replacing and reducing size! by {split_char_list[i]}")
+        print(f"{current_time()}Tweet larger than 280 so replacing and reducing size!")
         qt_split = qt.split(split_char_list[i])
         while len(qt_split)>1 and len(qt)>280:
              qt = qt.replace(qt_split[len(qt_split)-1],"")[:-1].strip()
@@ -54,9 +54,8 @@ def check_length(q1):
   if len(q1[1]+q2[1])<=280:
     print(f"{current_time()} 2nd partition successfull!")
     return q2[0],q2[1]+q1[1]
-  sp_str = str(q2[1]+q1[1]).split("\n")
-  print(f"{current_time()} 2nd partition successfull but second tweet not less than 280! So replacing last line!")
-  return q2[0],str(q2[1]+q1[1]).replace(sp_str[len(sp_str)-1],"").strip()
+  print(f"{current_time()} 2nd partition successfull but second tweet not less than 280!")
+  return q2[0],str(q2[1]+q1[1]).strip()
 
 # Default tweet method   
 def tweet_quote(api,quote):
@@ -80,7 +79,7 @@ def tweet_quote(api,quote):
         if f_char in append_to_s1:
           s1_quote += f_char
           s2_quote  = s2_quote[1:].strip()
-    print(f"{current_time()}Quote after partitioning: \n{current_time()}1st: {s1_quote}\n{current_time()}2nd: {s2_quote}")
+    print(f"{current_time()}Quote after partitioning-:\n{current_time()}1st Part-:\n{s1_quote}\n{current_time()}2nd Part-:\n{s2_quote}")
     tweet,t2 = tweet_with_repl(api,s1_quote,s2_quote)
     return tweet,t2
 

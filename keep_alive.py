@@ -1,9 +1,22 @@
 from flask import Flask,render_template,url_for,abort,send_file,redirect
 from threading import Thread
+import twitter
 import datetime
 import os
 app = Flask('',template_folder='static')
-app.debug = True
+# app.debug = True
+
+def get_summary(length):
+  api = twitter.create_api()
+  getstats = api.me()
+  summary = {
+     "Tweets Sent Today" : length,
+     "Total Tweets Sent": getstats.statuses_count,
+     "Total Followers": getstats.followers_count,
+     "Total Following": getstats.friends_count,
+     "Total Favourites": getstats.favourites_count
+  }
+  return summary
 
 @app.route('/',methods=['GET'])
 def main():
@@ -33,9 +46,10 @@ def show_logs():
      final_list.append(session_list)
      final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
      final_list.reverse()
+     summary  = get_summary(len(final_list))
      if not_found:
-        return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%Y (Previous Day)'),dl_href="log/download/latest")
-     return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%Y (Latest)'),dl_href="log/download/latest")
+        return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%Y (Previous Day)'),dl_href="/log/download/latest",summary=summary)
+     return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%Y (Latest)'),dl_href="/log/download/latest",summary=summary)
   except Exception as e:
      return e     
 
@@ -58,7 +72,8 @@ def retlog(datelog):
      final_list.append(session_list)
      final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
      final_list.reverse()
-     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"download/{datelog}") 
+     summary  = get_summary(len(final_list))
+     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary) 
 
 @app.route('/log/download',methods=['GET'])
 def download():

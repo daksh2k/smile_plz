@@ -6,25 +6,14 @@ import sys
 import random
 import datetime
 
-from dotenv import load_dotenv
 from time import sleep
 from pymongo import MongoClient
 
-# from keep_alive import keep_alive
-import retquote as rq
-import tweetq as tq
 
-# Connect with Twitter Account
-def create_api():
-  load_dotenv()  
-  consumer_key = os.environ.get("consumer_key")
-  consumer_secret = os.environ.get("consumer_secret")
-  access_token = os.environ.get("access_token")
-  access_token_secret = os.environ.get("access_token_secret")
-  auth = tweepy.OAuthHandler(consumer_key, consumer_secret) 
-  auth.set_access_token(access_token, access_token_secret)
-  api = tweepy.API(auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
-  return api
+from keep_alive import keep_alive
+import retquote as rq
+import twitter
+import tweetq as tq
 
 #Insert tweet in Database
 def insert_tweet(tweet,client):
@@ -89,9 +78,9 @@ def textmanup(input_text,typem="bold"):
 
 def main():  
   try:
-    api=create_api()
+    api=twitter.create_api()
     client = MongoClient(os.environ.get("database_uri"))
-    # keep_alive()
+    keep_alive()
   except Exception as e:
     print(f"Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{e}") 
     sys.exit()

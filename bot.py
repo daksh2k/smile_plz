@@ -31,13 +31,13 @@ def getquote(client):
     URL = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
     raw = requests.get(url=URL)
     if raw.status_code != 200:
-      print(f"Cannot get the quote (HTTP {raw.status_code}): {raw.text}\nAPI may be down!")
+      print(f"{rq.current_time()}Cannot get the quote (HTTP {raw.status_code}): {raw.text}\nAPI may be down!")
       sleep(120)
       return getquote(client)
     try:
       quote = json.loads(raw.text.replace("\\",""))
     except Exception as e:
-      print(f"{raw.text}\nException:\n{e}\nRetrying again...")
+      print(f"{rq.current_time()}\n{raw.text}\nException:\n{e}\nRetrying again...")
       sleep(5)
       return getquote(client)  
     if quote["quoteText"].strip()=="":
@@ -54,7 +54,7 @@ def getquote(client):
 def follow_followers(api):
     for follower in tweepy.Cursor(api.followers).items():
         if not follower.following:
-            print(f"Following {follower.name}")
+            print(f"{rq.current_time()}Following {follower.name}")
             follower.follow()
 
 # Make the text bold, italic or bolditalic      
@@ -78,13 +78,21 @@ def textmanup(input_text,typem="bold"):
 
 def main():  
   try:
-    api=twitter.create_api()
+    api= twitter.create_api()
     client = MongoClient(os.environ.get("database_uri"))
     keep_alive()
   except Exception as e:
-    print(f"Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{e}") 
+    print(f"{rq.current_time()}Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{rq.current_time()}{e}") 
     sys.exit()
   while True:
+    if os.environ.get("logging")=="on":
+      log_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))
+      old_log  = f"Logs/log_{(log_date-datetime.timedelta(days=7)).strftime('%d_%m_%y')}.txt"
+      sys.stdout = open(f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt","a",encoding="utf-8")
+      if os.path.isfile(old_log):
+        os.remove(old_log)
+        print(f"{rq.current_time()}Removed old log! {old_log}")
+    print(f"\n{rq.current_time()}New tweet session!")
     try:
       follow_followers(api)
     except:
@@ -93,18 +101,22 @@ def main():
       quote = rq.main(client)
       tweet,t2 = tq.tweet_quote(api,quote)
     except Exception as e:
-      print(f"Problem getting Quote! DB may be down. Using API for Quote.\n{e}")
+      print(f"{rq.current_time()}Problem getting Quote! DB may be down. Using API for Quote.\n{rq.current_time()}{e}")
       quote = getquote(client)
       tweet,t2 = tq.tweet_dbdown(api,quote)
     try: 
       insert_tweet(tweet,client)
-      print(tweet.full_text)
+      print(f"{rq.current_time()}Tweet sent-:\n{tweet.full_text}")
       if t2 is not None:
         insert_tweet(t2,client)
-        print(t2.full_text)
+        print(f"{rq.current_time()}2nd Tweet Sent-:\n{t2.full_text}")
     except Exception as e:
-      print(f"Error inserting in tweet collections!\n{e}")  
+      print(f"{rq.current_time()}Error inserting in tweet collections!\n{rq.current_time()}{e}")  
     sleep_time = random.randint(60*52, 60*58)
+    if os.environ.get("logging")=="on":
+       sys.stdout.flush()
+       os.close(sys.stdout.fileno())
+       sys.stdout = sys.__stdout__
     sleep(sleep_time)
 
 if __name__ == "__main__":

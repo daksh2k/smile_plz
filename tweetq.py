@@ -112,4 +112,4 @@ def tweet_dbdown(api,quote):
         s1_quote +=" (1/2)"
         s2_quote +=" (2/2)"
     tweet,t2 = tweet_with_repl(api,s1_quote,s2_quote)
-    return tweet,t2  
+    return tweet,t2

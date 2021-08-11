@@ -92,7 +92,7 @@ def retfile(fname):
     return send_file(f"Logs/log_{fname}.txt",as_attachment=True)
 
 def run():
-  app.run(host="localhost", port=8080)
+  app.run(host=os.environ.get("host"), port=8080)
   app.add_url_rule('/favicon.ico',redirect_to=url_for('static', filename='favicon.ico'))
 
 def keep_alive():

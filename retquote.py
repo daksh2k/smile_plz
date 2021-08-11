@@ -1,4 +1,5 @@
 from bson import ObjectId
+import re
 from time import sleep
 import random
 import datetime
@@ -36,13 +37,14 @@ def parse_doc(doc):
     for tag in tags_list:
         if len(tags_list_final)==3:
             break
-        if len(tag)<15:
+        if re.match(r"^[a-zA-Z-_]{3,15}$",tag) is not None:
            tags_list_final.append(tag)    
     if not tags_list_final:
         for tag in tags_list:
           if len(tags_list_final)==2:
              break
-          tags_list_final.append(tag)
+          if re.match(r"^[a-zA-Z-_]{2,}$",tag) is not None:   
+             tags_list_final.append(tag)
     tags = "\n#quotes #"+" #".join(tags_list_final)
     if tags[-2:]==" #":
         tags = tags[:-2]

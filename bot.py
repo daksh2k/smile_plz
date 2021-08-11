@@ -80,7 +80,8 @@ def main():
   try:
     api= twitter.create_api()
     client = MongoClient(os.environ.get("database_uri"))
-    keep_alive()
+    if os.environ.get("platformtype")=="replit":
+      keep_alive()
   except Exception as e:
     print(f"{rq.current_time()}Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{rq.current_time()}{e}") 
     sys.exit()

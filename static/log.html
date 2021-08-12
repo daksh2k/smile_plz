@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Twitter Bot</title>
+	<title>Twitter Bot Logs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
@@ -12,9 +12,12 @@
 body{
   background-color: rgb(30, 30, 30);
 }
-button {
-   margin: auto !important;
-   display:block !important;
+.log-list-container{
+  display: none;
+}
+.btn {
+   margin: 1rem !important;
+   display: block !important;
 }
 .card{
   background-color: rgb(34, 40, 46);
@@ -24,12 +27,25 @@ button {
   box-shadow: .25rem .5rem 1rem rgba(19,132,150,.10);
 }
 .dl-button{
-  margin: 2rem auto;
+  margin: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>
 <h1 class="log text-center text-white">Log {{log_date}}</h1>
-<div class="dl-button"><button type="button" class="btn btn-info log-download">Download Log</button></div>
+<div class="dl-button">
+  <a href = "{{ dl_href }}" class="btn btn-info">Download Log</a>
+  <button type="button" class="btn btn-primary log-list-show" onclick="togglelist()">Show All Logs</button>
+</div>
 <div class="container">
+  <div class="log-list-container">
+    <div class="list-group">
+      {% for log in logs_all %}
+         <a href=" /log/{{ log.replace('/','_') }}" target="_blank" class="list-group-item list-group-item-action list-group-item-primary" id="log-file">Log {{ log }}</a>
+      {% endfor %}
+    </div>
+  </div>
     <div class="row row-cols-1">
         <div class="cols"><div class="card"><div class="card-body text-success">
               <h3 class="card-title text-center">Summary</h3>
@@ -49,9 +65,23 @@ button {
     </div>
 </div>
 <script>
-  document.querySelector(".log-download").addEventListener('click',() =>{
-    window.location.href = '{{ dl_href }}';
-});
+  function togglelist(){
+    var cntnr = document.querySelector(".log-list-container")
+    var btn   = document.querySelector(".log-list-show")
+    if(cntnr.style.display==="block"){
+      cntnr.style.display="none"
+      btn.innerText = "Show All Logs"
+    }
+    else{
+      cntnr.style.display="block"
+      btn.innerText = "Hide Logs"
+    }
+  }
+    for (const file of document.querySelectorAll("#log-file")){
+      if(file.innerText.split(' ')[1] == '{{ log_date }}'.split(' ')[0]){
+        file.classList.add("active")
+    }
+  } 
 </script>
 </body>
 </html>

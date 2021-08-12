@@ -3,8 +3,15 @@ from threading import Thread
 import twitter
 import datetime
 import os
+import re
+
 app = Flask('',template_folder='static')
 # app.debug = True
+
+def get_all():
+  log_list = [re.search(r"log_(\d{2}_\d{2}_\d{2})",log_file).group(1).replace("_","/") for log_file in os.listdir('Logs')]
+  log_list.reverse()
+  return log_list 
 
 def get_summary(length):
   api = twitter.create_api()
@@ -48,8 +55,8 @@ def show_logs():
      final_list.reverse()
      summary  = get_summary(len(final_list))
      if not_found:
-        return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%Y (Previous Day)'),dl_href="/log/download/latest",summary=summary)
-     return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%Y (Latest)'),dl_href="/log/download/latest",summary=summary)
+        return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%y (Previous Day)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
+     return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%y (Latest)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
   except Exception as e:
      return e     
 
@@ -73,7 +80,7 @@ def retlog(datelog):
      final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
      final_list.reverse()
      summary  = get_summary(len(final_list))
-     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary) 
+     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary,logs_all=get_all()) 
 
 @app.route('/log/download',methods=['GET'])
 def download():

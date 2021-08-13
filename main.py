@@ -110,10 +110,10 @@ def main():
       tweet,t2 = tq.tweet_dbdown(api,quote)
     try: 
       insert_tweet(tweet,client)
-      print(f"{rq.current_time()}Tweet sent-:\n{tweet.full_text}")
+      print(f"{rq.current_time()}Tweet Sent-:\nTweetId: {tweet.id}\n{tweet.full_text}")
       if t2 is not None:
         insert_tweet(t2,client)
-        print(f"{rq.current_time()}2nd Tweet Sent-:\n{t2.full_text}")
+        print(f"{rq.current_time()}2nd Tweet Sent-:\nTweetId: {t2.id}\n{t2.full_text}")
     except Exception as e:
       print(f"{rq.current_time()}Error inserting in tweet collections!\n{rq.current_time()}{e}")  
     sleep_time = random.randint(60*52, 60*58)

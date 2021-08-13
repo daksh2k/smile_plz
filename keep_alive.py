@@ -34,15 +34,27 @@ def get_all():
      log_dict[logf] = f"{len(calculate_sessions(log_file_lines))}"
   return log_dict 
 
-def get_summary(length):
+def get_summary(fin_list):
   api = twitter.create_api()
   getstats = api.me()
+  tweets_to_get = []
+  for session in fin_list:
+    for line in session:
+        if line.find('TweetId')!=-1:
+            tweets_to_get.append(line.split(' ')[1])
+  tot_favs = 0
+  tot_rts   = 0
+  for tweetid in tweets_to_get:
+    tweet = api.get_status(tweetid)
+    tot_favs  += tweet.favourite_count
+    tot_rts   += tweet.retweet_count
   summary = {
-     "Tweets Sent Today" : length,
-     "Total Tweets Sent": getstats.statuses_count,
-     "Total Followers": getstats.followers_count,
-     "Total Following": getstats.friends_count,
-     "Total Favourites": getstats.favourites_count
+     "Tweets Sent Today" : len(fin_list),
+     "Favourites Today"  : tot_favs,
+     "Retweets Today"    : tot_rts,
+     "Total Tweets Sent" : getstats.statuses_count,
+     "Total Followers"   : getstats.followers_count,
+     "Total Following"   : getstats.friends_count
   }
   return summary
 
@@ -63,7 +75,7 @@ def show_logs():
      log_file_lines = log_file.readlines()
      log_file.close()
      final_list = calculate_sessions(log_file_lines)
-     summary  = get_summary(len(final_list))
+     summary  = get_summary(final_list)
      if not_found:
         return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%y (Previous Day)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
      return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%y (Latest)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
@@ -78,7 +90,7 @@ def retlog(datelog):
      log_file_lines = log_file.readlines()
      log_file.close()
      final_list = calculate_sessions(log_file_lines)
-     summary  = get_summary(len(final_list))
+     summary  = get_summary(final_list)
      return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary,logs_all=get_all()) 
 
 @app.route('/log/download',methods=['GET'])

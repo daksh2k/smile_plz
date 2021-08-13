@@ -86,14 +86,17 @@ def main():
     print(f"{rq.current_time()}Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{rq.current_time()}{e}") 
     sys.exit()
   while True:
+    del_old = False 
     if os.environ.get("logging")=="on":
       log_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))
       old_log  = f"Logs/log_{(log_date-datetime.timedelta(days=7)).strftime('%d_%m_%y')}.txt"
       sys.stdout = open(f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt","a",encoding="utf-8")
       if os.path.isfile(old_log):
         os.remove(old_log)
-        print(f"{rq.current_time()}Removed old log! {old_log}")
+        del_old = True
     print(f"\n{rq.current_time()}New tweet session!")
+    if del_old:
+      print(f"{rq.current_time()}Removed old log! {old_log}")
     try:
       follow_followers(api)
     except:

@@ -8,6 +8,7 @@ import re
 app = Flask('',template_folder='static')
 # app.debug = True
 
+# Parse the Log File to get Individual Tweet Sessions
 def calculate_sessions(log_file_lines):
   final_list = []
   session_list= []
@@ -23,6 +24,7 @@ def calculate_sessions(log_file_lines):
   final_list.reverse()
   return final_list
 
+# Return the List of all Log Files Present in the System
 def get_all():
   log_list = [re.search(r"log_(\d{2}_\d{2}_\d{2})",log_file).group(1).replace("_","/") for log_file in os.listdir('Logs')]
   log_list.reverse()
@@ -34,20 +36,24 @@ def get_all():
      log_dict[logf] = f"{len(calculate_sessions(log_file_lines))}"
   return log_dict 
 
+# Get the Summary for current day and overall Profile 
 def get_summary(fin_list):
   api = twitter.create_api()
   getstats = api.me()
   tweets_to_get = []
   for session in fin_list:
     for line in session:
-        if line.find('TweetId')!=-1:
-            tweets_to_get.append(line.split(' ')[1])
-  tot_favs = 0
+        if line.strip().find('TweetId')!=-1:
+            tweets_to_get.append(line.split(' ')[2].strip())
+  tot_favs  = 0
   tot_rts   = 0
-  for tweetid in tweets_to_get:
-    tweet = api.get_status(tweetid)
-    tot_favs  += tweet.favourite_count
-    tot_rts   += tweet.retweet_count
+  try:
+    for tweetid in tweets_to_get:
+      tweet = api.get_status(tweetid)
+      tot_favs  += tweet.favorite_count
+      tot_rts   += tweet.retweet_count
+  except Exception as e:
+      print(e)    
   summary = {
      "Tweets Sent Today" : len(fin_list),
      "Favourites Today"  : tot_favs,

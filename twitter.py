@@ -1,10 +1,11 @@
 import tweepy
-from dotenv import load_dotenv
 import os
 
 # Connect with Twitter Account
 def create_api():
-  load_dotenv()  
+  if os.environ.get("platformtype","local")!="replit":
+      from dotenv import load_dotenv
+      load_dotenv()  
   consumer_key = os.environ.get("consumer_key")
   consumer_secret = os.environ.get("consumer_secret")
   access_token = os.environ.get("access_token")

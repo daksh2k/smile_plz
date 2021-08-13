@@ -8,10 +8,31 @@ import re
 app = Flask('',template_folder='static')
 # app.debug = True
 
+def calculate_sessions(log_file_lines):
+  final_list = []
+  session_list= []
+  for line in log_file_lines:
+    if not line.strip():
+        if session_list:
+            final_list.append(session_list)
+        session_list=[]
+    else:
+       session_list.append(line)    
+  final_list.append(session_list)
+  final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
+  final_list.reverse()
+  return final_list
+
 def get_all():
   log_list = [re.search(r"log_(\d{2}_\d{2}_\d{2})",log_file).group(1).replace("_","/") for log_file in os.listdir('Logs')]
   log_list.reverse()
-  return log_list 
+  log_dict = {}
+  for logf in log_list:
+     log_file = open(f"Logs/log_{logf.replace('/','_')}.txt","r",encoding="utf-8")
+     log_file_lines = log_file.readlines()
+     log_file.close()
+     log_dict[logf] = f"{len(calculate_sessions(log_file_lines))}"
+  return log_dict 
 
 def get_summary(length):
   api = twitter.create_api()
@@ -41,18 +62,7 @@ def show_logs():
         log_file = open(f"Logs/log_{(log_date-datetime.timedelta(days=1)).strftime('%d_%m_%y')}.txt","r",encoding="utf-8")  
      log_file_lines = log_file.readlines()
      log_file.close()
-     final_list = []
-     session_list= []
-     for line in log_file_lines:
-        if not line.strip():
-            if session_list:
-                final_list.append(session_list)
-            session_list=[]
-        else:
-           session_list.append(line)    
-     final_list.append(session_list)
-     final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
-     final_list.reverse()
+     final_list = calculate_sessions(log_file_lines)
      summary  = get_summary(len(final_list))
      if not_found:
         return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%y (Previous Day)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
@@ -67,18 +77,7 @@ def retlog(datelog):
      log_file = open(f"Logs/log_{datelog}.txt","r",encoding="utf-8")
      log_file_lines = log_file.readlines()
      log_file.close()
-     final_list = []
-     session_list= []
-     for line in log_file_lines:
-        if not line.strip():
-            if session_list:
-                final_list.append(session_list)
-            session_list=[]
-        else:
-           session_list.append(line)    
-     final_list.append(session_list)
-     final_list = [[str(i+1)+". "+l for i,l in enumerate(session)] for session in final_list]
-     final_list.reverse()
+     final_list = calculate_sessions(log_file_lines)
      summary  = get_summary(len(final_list))
      return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary,logs_all=get_all()) 
 

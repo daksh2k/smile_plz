@@ -111,9 +111,28 @@ def retfile(fname):
         return abort(404)   
     return send_file(f"Logs/log_{fname}.txt",as_attachment=True)
 
+#Redirect to the main route for Downloading
+@app.route('/log/download',methods=['GET'])
+def download():
+    return redirect('/log/download/latest',code=303)
+
+# Async Route For Fetching Summary
+@app.route('/log_summary',methods=['GET'])
+def get_summary():
+    log_file = open(f"Logs/log_{request.headers['logdate'].split(' ')[1].replace('/','_')}.txt","r",encoding="utf-8")
+    log_file_lines = log_file.readlines()
+    log_file.close()
+    final_list = calculate_sessions(log_file_lines)
+    summary  = calculate_summary(final_list)
+    return render_template("summary.html",summary=summary)
+
+#Async Route for returning Log List
+@app.route('/log_all_list',methods=['GET'])
+def log_all_list():
+    return render_template("loglist.html",logs_all=get_all()) 
+    
 def run():
   app.run(host=os.environ.get("host"), port=8080)
-  app.add_url_rule('/favicon.ico',redirect_to=url_for('static', filename='favicon.ico'))
 
 def keep_alive():
   server = Thread(target=run)

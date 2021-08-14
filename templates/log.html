@@ -9,7 +9,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
 </head>
 <body>
-<h1 class="log text-center text-white">Log {{log_date}}</h1>
+<h1 class="text-center text-white">Log {{log_date}}</h1>
 <div class="top-bar">
   <a href = "/log/download/{{ log_date.split(' ')[0].replace('/','_') }}" class="btn btn-info">Download Log</a>
   <button type="button" class="btn btn-primary log-list-show" onclick="togglelist()">Show All Logs</button>

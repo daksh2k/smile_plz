@@ -1,11 +1,12 @@
-from flask import Flask,render_template,url_for,abort,send_file,redirect
+from flask import Flask,render_template,abort,send_file,request,redirect
 from threading import Thread
-import twitter
+from concurrent.futures import as_completed, ThreadPoolExecutor
 import datetime
 import os
 import re
+import twitter
 
-app = Flask('',template_folder='static')
+app = Flask('__name__',template_folder='templates',static_folder='static')
 # app.debug = True
 
 # Parse the Log File to get Individual Tweet Sessions
@@ -37,7 +38,7 @@ def get_all():
   return log_dict 
 
 # Get the Summary for current day and overall Profile 
-def get_summary(fin_list):
+def calculate_summary(fin_list):
   api = twitter.create_api()
   getstats = api.me()
   tweets_to_get = []
@@ -48,10 +49,12 @@ def get_summary(fin_list):
   tot_favs  = 0
   tot_rts   = 0
   try:
-    for tweetid in tweets_to_get:
-      tweet = api.get_status(tweetid)
-      tot_favs  += tweet.favorite_count
-      tot_rts   += tweet.retweet_count
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = [executor.submit(api.get_status,tweetid) for tweetid in tweets_to_get]
+        for f in as_completed(futures):
+            tweet = f.result()
+            tot_favs  += tweet.favorite_count
+            tot_rts   += tweet.retweet_count
   except Exception as e:
       print(e)    
   summary = {
@@ -64,30 +67,27 @@ def get_summary(fin_list):
   }
   return summary
 
+# Main Route for showing twitter profile
 @app.route('/',methods=['GET'])
 def main():
-  return render_template("index.html",profile=os.environ.get("twitter_profile"))
-  
+  return render_template("index.html",profile=os.environ.get("twitter_profile","https://twitter.com/smile_plz12"))
+
+#Show the latest Log file 
 @app.route('/log',methods=['GET'])
 def show_logs():
   log_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))
   try:
-     try:
-        not_found=0
-        log_file = open(f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt","r",encoding="utf-8")
-     except FileNotFoundError:
-        not_found=1
-        log_file = open(f"Logs/log_{(log_date-datetime.timedelta(days=1)).strftime('%d_%m_%y')}.txt","r",encoding="utf-8")  
-     log_file_lines = log_file.readlines()
-     log_file.close()
-     final_list = calculate_sessions(log_file_lines)
-     summary  = get_summary(final_list)
-     if not_found:
-        return render_template("log.html",log_list=final_list,log_date=(log_date-datetime.timedelta(days=1)).strftime('%d/%m/%y (Previous Day)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
-     return render_template("log.html",log_list=final_list,log_date=log_date.strftime('%d/%m/%y (Latest)'),dl_href="/log/download/latest",summary=summary,logs_all=get_all())
-  except Exception as e:
-     return e     
+      log_file = open(f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt","r",encoding="utf-8")
+      log_date_formatted = log_date.strftime('%d/%m/%y (Latest)') 
+  except FileNotFoundError:
+      log_file = open(f"Logs/log_{(log_date-datetime.timedelta(days=1)).strftime('%d_%m_%y')}.txt","r",encoding="utf-8")
+      log_date_formatted = (log_date-datetime.timedelta(days=1)).strftime('%d/%m/%y (Previous Day)')
+  log_file_lines = log_file.readlines()
+  log_file.close()
+  final_list = calculate_sessions(log_file_lines)
+  return render_template("log.html",log_list=final_list,log_date=log_date_formatted)
 
+#Show the Particular Log File According to the date
 @app.route('/log/<datelog>',methods=['GET'])
 def retlog(datelog):
      if not os.path.isfile(f"Logs/log_{datelog}.txt"):
@@ -96,13 +96,9 @@ def retlog(datelog):
      log_file_lines = log_file.readlines()
      log_file.close()
      final_list = calculate_sessions(log_file_lines)
-     summary  = get_summary(final_list)
-     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)",dl_href=f"/log/download/{datelog}",summary=summary,logs_all=get_all()) 
+     return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)") 
 
-@app.route('/log/download',methods=['GET'])
-def download():
-    return redirect('/log/download/latest',code=303)
-
+#Main Route For Downloading Log Files
 @app.route('/log/download/<path:fname>',methods=['GET'])
 def retfile(fname):
     latest_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))

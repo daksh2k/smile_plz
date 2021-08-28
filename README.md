@@ -26,9 +26,6 @@
   - access_token = "XXXXXXXXXXXXXXXXXXXXXXX" 
   - access_token_secret = "XXXXXXXXXXXXXXXXXXXX" 
   - database_uri = "Your Mongo Atlas URI"
-  - twitter_profile = "https://twitter.com/{your username}"
 - ### Or set these variables in your deployed environment.
 
-### Then run the [bot.py](./bot.py) file to execute your bot.
-For showing your twitter timeline on your website. Set your twitter profile link in the environment and modify [index.html](./static/index.html) according to needs.  
-
+### Then run the [main.py](./main.py) file to execute your bot.

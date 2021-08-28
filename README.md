@@ -2,9 +2,10 @@
  Twitter bot which tweets a new random quote hourly.
  Deployed on **[Replit](https://www.replit.com/@smileplz/smile-plz)**.
 
- Quotes powered by the **[Forismatic API](https://forismatic.com/en/api/)**.
-
- Also with a duplicate tweet check using tweets stored in MongoDB hosted at **[Mongo Atlas](https://www.mongodb.com/cloud/atlas)**.
+ Quotes powered by a custom 500k quotes dataset made from **[Goodreads](https://www.goodreads.com/quotes)** stored in MongoDB hosted at **[Mongo Atlas](https://www.mongodb.com/cloud/atlas)**.
+ There is also a second method for getting quotes using the **[Forismatic API](https://forismatic.com/en/api/)**, which is added as a fallback.
+ 
+ There is also support for dividing the tweet in 2 if it is longer than 280 chars.
  
  Checkout the tweets at:
  - ### Check out the bot at this **[Twitter Profile.](https://twitter.com/smile_plz12)**

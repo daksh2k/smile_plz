@@ -7,7 +7,7 @@ load_dotenv()
 
 @app.route('/')
 def index():
-    return render_template("index.html",profile=os.environ.get("twitter_profile"))
+    return render_template("index.html",profile=os.environ.get("twitter_profile","https://twitter.com/smile_plz12"))
 
 def main():
     port = int(os.environ.get('PORT', 5000))

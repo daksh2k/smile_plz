@@ -26,7 +26,6 @@ def insert_tweet(tweet,client):
 
 #Get Quote and parse it
 def getquote(client):
-    client = client
     URL = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json"
     raw = requests.get(url=URL)
     if raw.status_code != 200:

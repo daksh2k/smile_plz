@@ -9,12 +9,10 @@ import datetime
 from time import sleep
 from pymongo import MongoClient
 
-
-from keep_alive import keep_alive
+# import relevant files
 import retquote as rq
 import twitter
 import tweetq as tq
-import saveindb as sdb
 
 #Insert tweet in Database
 def insert_tweet(tweet,client):
@@ -82,6 +80,8 @@ def main():
     api= twitter.create_api()
     client = MongoClient(os.environ.get("database_uri"))
     if os.environ.get("platformtype","local")=="replit":
+      from keep_alive import keep_alive
+      import saveindb as sdb
       keep_alive()
       sdb.load_files()
   except Exception as e:

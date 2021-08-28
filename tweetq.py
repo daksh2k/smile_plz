@@ -24,9 +24,10 @@ def tweet_with_repl(api,q1,q2):
 # Try reducing size by splitting and replacing
 def reduce_size(qt):
     i=0
-    split_char_list =  ("#","(","\n",".",",","\"","'")
+    split_char_list =  ("#","(","\n",",",".","\"","'")
     while len(qt)>280 and i<len(split_char_list):
-        print(f"{current_time()}Tweet larger than 280 so replacing and reducing size!")
+        s_char = "newline" if split_char_list[i]=="\n" else split_char_list[i] 
+        print(f"{current_time()}Tweet larger than 280 so replacing and reducing size by {s_char}")
         qt_split = qt.split(split_char_list[i])
         while len(qt_split)>1 and len(qt)>280:
              qt = qt.replace(qt_split[len(qt_split)-1],"")[:-1].strip()

@@ -27,8 +27,11 @@ def parse_doc(doc):
     auth = doc["author"].strip().split(',')[0]
     quote += "\n–"+auth.strip() 
     try:
-      source = doc["author"].strip().split(',')[1].strip()
-      if len(quote+source)<550:
+      source_all = doc["author"].strip().split(',')
+      source = ""
+      for i in range(1,len(source_all)):
+        source +=source_all[i].strip()
+      if len(quote+source)<550 and source!="":
         quote+=f" ({source})"
     except IndexError:
       pass
@@ -37,13 +40,13 @@ def parse_doc(doc):
     for tag in tags_list:
         if len(tags_list_final)==3:
             break
-        if re.match(r"^[a-zA-Z-_]{3,15}$",tag) is not None:
+        if re.match(r"^(?=.{3,15}$)^(\w*[a-zA-Z]+\w*)$",tag) is not None:
            tags_list_final.append(tag)    
     if not tags_list_final:
         for tag in tags_list:
           if len(tags_list_final)==2:
              break
-          if re.match(r"^[a-zA-Z-_]{2,}$",tag) is not None:   
+          if re.match(r"^(?=.{2,}$)^(\w*[a-zA-Z]+\w*)$",tag) is not None:   
              tags_list_final.append(tag)
     tags = "\n#quotes #"+" #".join(tags_list_final)
     if tags[-2:]==" #":

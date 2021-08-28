@@ -66,13 +66,13 @@ function updateScrollButtons(){
   const docHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
   const currLoc = document.documentElement.scrollTop || document.body.scrollTop;
   if (currLoc< 400)
-    $(".s-up").hide(200);
+    $(".s-up").hide(150);
   else
-    $(".s-up").show(200);
-  if(docHeight-currLoc < docHeight/15)
-    $(".s-down").hide(200);
+    $(".s-up").show(150);
+  if(docHeight-currLoc < docHeight/25)
+    $(".s-down").hide(150);
   else
-    $(".s-down").show(200);  
+    $(".s-down").show(150);  
 }
 
 // For Showing the log list on button press

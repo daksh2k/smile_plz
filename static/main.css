@@ -9,7 +9,6 @@ body{
 }
 .btn{
    margin: 1rem !important;
-   display: block !important;
 }
 .container {
     align-items: center;
@@ -65,4 +64,37 @@ body{
   padding: 0.5rem;
   border-radius: 1rem;
   box-shadow: .25rem .5rem 1rem rgba(19,132,150,.10);
+}
+.but-sc{
+    float: right;
+    right:  5vw;
+    bottom: 2vh;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+}
+.scroll-btn{
+  display: block;
+  align-items: center;
+  justify-content: center;
+  margin: .5rem 0 !important;
+  background-color: rgba(60, 60, 75,0.8);
+  box-shadow: .1rem .2rem .5rem rgba(19,132,150,.10);
+  border: none;
+  height: 3.8rem; 
+  width:  3.8rem;  
+  border-radius: 50%;
+  text-align: center;
+}
+.scroll-btn:hover{
+  background-color: rgb(46, 110, 209);
+  border:  none;
+}
+.scroll-btn:focus,.scroll-btn.focus{
+   box-shadow: none;
+   border: none;
+   outline: none;
+}
+.s-up{
+  display: none;
 }

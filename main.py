@@ -14,6 +14,7 @@ from keep_alive import keep_alive
 import retquote as rq
 import twitter
 import tweetq as tq
+import saveindb as sdb
 
 #Insert tweet in Database
 def insert_tweet(tweet,client):
@@ -80,19 +81,22 @@ def main():
   try:
     api= twitter.create_api()
     client = MongoClient(os.environ.get("database_uri"))
-    if os.environ.get("platformtype")=="replit":
+    if os.environ.get("platformtype","local")=="replit":
       keep_alive()
+      sdb.load_files()
   except Exception as e:
     print(f"{rq.current_time()}Exception encountered in connecting with Database or Twitter.Check the credentials again!\n{rq.current_time()}{e}") 
     sys.exit()
   while True:
     del_old = False 
-    if os.environ.get("logging")=="on":
+    if os.environ.get("logging","off")=="on":
       log_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))
-      old_log  = f"Logs/log_{(log_date-datetime.timedelta(days=7)).strftime('%d_%m_%y')}.txt"
-      sys.stdout = open(f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt","a",encoding="utf-8")
+      old_log  = f"Logs/log_{(log_date-datetime.timedelta(days=15)).strftime('%d_%m_%y')}.txt"
+      curr_log = f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt"
+      sys.stdout = open(curr_log,"a",encoding="utf-8")
       if os.path.isfile(old_log):
         os.remove(old_log)
+        sdb.clean_db(old_log)
         del_old = True
     print(f"\n{rq.current_time()}New tweet session!")
     if del_old:
@@ -117,10 +121,12 @@ def main():
     except Exception as e:
       print(f"{rq.current_time()}Error inserting in tweet collections!\n{rq.current_time()}{e}")  
     sleep_time = random.randint(60*52, 60*58)
-    if os.environ.get("logging")=="on":
+    if os.environ.get("logging","off")=="on":
        sys.stdout.flush()
        os.close(sys.stdout.fileno())
        sys.stdout = sys.__stdout__
+       if os.environ.get("platformtype","local")=="replit":
+         sdb.save_file(curr_log)
     sleep(sleep_time)
 
 if __name__ == "__main__":

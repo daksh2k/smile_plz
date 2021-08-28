@@ -69,7 +69,7 @@ function updateScrollButtons(){
     $(".s-up").hide(150);
   else
     $(".s-up").show(150);
-  if(docHeight-currLoc < docHeight/25)
+  if(docHeight-currLoc < 1300)
     $(".s-down").hide(150);
   else
     $(".s-down").show(150);  

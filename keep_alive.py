@@ -6,7 +6,7 @@ import os
 import re
 import twitter
 
-app = Flask('__name__',template_folder='templates',static_folder='static')
+app = Flask(__name__,template_folder='templates',static_folder='static')
 # app.debug = True
 
 # Parse the Log File to get Individual Tweet Sessions
@@ -99,10 +99,12 @@ def retlog(datelog):
      return render_template("log.html",log_list=final_list,log_date=datelog.replace('_','/')+" (Old)") 
 
 #Main Route For Downloading Log Files
+@app.route('/download', defaults={'fname': None}, methods=['GET'])
+@app.route('/log/download',defaults={'fname': None},methods = ['GET'])
 @app.route('/log/download/<path:fname>',methods=['GET'])
-def retfile(fname):
+def retfile(fname=None):
     latest_time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30)))
-    if fname in ("/","latest"):
+    if fname in ("/","latest") or fname is None:
       log_latest = f"Logs/log_{latest_time.strftime('%d_%m_%y')}.txt"
       if not os.path.isfile(log_latest):
           log_latest = f"Logs/log_{(latest_time-datetime.timedelta(days=1)).strftime('%d_%m_%y')}.txt"
@@ -111,10 +113,10 @@ def retfile(fname):
         return abort(404)   
     return send_file(f"Logs/log_{fname}.txt",as_attachment=True)
 
-#Redirect to the main route for Downloading
+"""#Redirect to the main route for Downloading
 @app.route('/log/download',methods=['GET'])
 def download():
-    return redirect('/log/download/latest',code=303)
+    return redirect('/log/download/latest',code=303)"""
 
 # Async Route For Fetching Summary
 @app.route('/log_summary',methods=['GET'])

@@ -45,7 +45,7 @@ def getquote(client):
       return getquote(client)
     if quote["quoteAuthor"].strip()=="":
       quote["quoteAuthor"] = "Unknown"
-    author = "-"+quote["quoteAuthor"].strip()
+    author = "–"+quote["quoteAuthor"].strip()
     # author= textmanup(author,typem="bold")
     tweettopublish=quote["quoteText"].strip()+"\n"+author
     return tweettopublish

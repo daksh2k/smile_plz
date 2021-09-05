@@ -10,10 +10,10 @@
  
  Checkout the tweets at:
  - ### Check out the bot at this **[Twitter Profile.](https://twitter.com/smile_plz12)**
-  <img src="https://raw.githubusercontent.com/daksh2k/smile_plz/master/images/timeline_p.png" alt="Profile Image" width="300" height="450"/>
+  <img src="https://raw.githubusercontent.com/daksh2k/smile_plz/master/images/timeline_p.png" alt="Profile Image" width="550" height="840"/>
 
  - ### Or on the **[Replit Website](https://smile-plz.smileplz.repl.co/)** where timeline is shown using **[Twitter Widgets](https://developer.twitter.com/en/docs/twitter-for-websites/timelines/overview)**.
-  <img src="https://raw.githubusercontent.com/daksh2k/smile_plz/master/images/timeline_w.png" alt="Profile Image" width="500" height="450"/>
+  <img src="https://raw.githubusercontent.com/daksh2k/smile_plz/master/images/timeline_w.png" alt="Profile Image" width="650" height="540"/>
 
 ## Prerequisites
 - Get the twitter credentials from your Twitter Developer Account [here](https://developer.twitter.com/en/portal/projects-and-apps).

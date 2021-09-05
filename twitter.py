@@ -4,10 +4,15 @@ from time import sleep
 
 # Connect with Twitter Account
 def create_api():
+  """
+  Get the required secrets from environment.
+  If platform_type is local load the .env file for loading secrets
+  If authentication fails or any exception print the exception and retry after 5 minutes
+  """
   try:
-    if os.environ.get("platformtype","local")!="replit":
-       from dotenv import load_dotenv
-       load_dotenv()  
+    if os.environ.get("platform_type","local")=="local":
+      from dotenv import load_dotenv
+      load_dotenv()  
     consumer_key = os.environ.get("consumer_key")
     consumer_secret = os.environ.get("consumer_secret")
     access_token = os.environ.get("access_token")

@@ -113,16 +113,18 @@ def get_summary():
     summary  = calculate_summary(final_list)
     return render_template("summary.html",summary=summary)
 
-#Async Route for returning Log List
+# Async Route for returning Log List
 @app.route('/log_all_list',methods=['GET'])
 def log_all_list():
   return render_template("loglist.html",logs_all=get_all()) 
-    
+
+# For running the Flask application
 def run():
   port = int(os.environ.get("PORT", 8080))
   host = os.environ.get("HOST","0.0.0.0")
   app.run(host=host, port=port)
 
+# Run in a separate thread for running multiple processes
 def keep_alive():
   server = Thread(target=run)
   server.start()

@@ -28,6 +28,7 @@ body{
   border-bottom-right-radius: 1rem;
 }
 .list-group-item{
+  cursor: pointer;
   background-color: rgb(34, 40, 46);
   display: flex;
   align-items: center;
@@ -39,15 +40,19 @@ body{
   background-color: rgb(49,55,61);
 }
 .list-group-item.active,.list-group-item.active:hover{
+  cursor: default;
   background-color: rgb(1,75,140);
   border-color:rgb(0,50,140);
 }
-.link-log{
+.link-log,.link-log.active:hover{
   color: #FFF; 
   text-decoration: none;
   padding: 1rem;
 }
-.link-log:hover{
+.link-log.active:hover{
+  cursor: default;
+}
+.link-log:hover,.hover-color{
   color: rgb(63, 147, 225);
   text-decoration: none;
 }

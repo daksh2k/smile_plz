@@ -14,14 +14,34 @@
   $.ajax({url: "/log_all_list",
          success: (res) => {
           $(".log-list-container").append(res);
+          updateListClick()
           $(".list-group-item").each( function (){
             if(this.children[0].text.split(' ')[1] == $("h1").text().split(' ')[1]){
               $(this).addClass("active")
+              $(this).children().addClass("active")
+              $(this).children()[0].href="#"
             }
           })
         }
       });
 })();
+
+// Add eventlistener for click on element of list item to view that log
+function updateListClick(){
+  $(".link-log").each(function() {
+      const parEle = $(this).parent()[0]
+      $(parEle).on('click',(evt) => {
+        if(!$(this).next()[0].contains(evt.target) && !parEle.classList.contains("active"))
+          window.location.href = $(this)[0].href
+      })
+      $($(parEle).parents()[3]).on('mousemove',(evt) =>{
+        if (evt.target==parEle && !parEle.classList.contains("active"))
+            $(this).addClass("hover-color")
+        else
+            $(this).removeClass("hover-color")
+      })
+    })
+}
 
 /* Add event listener for long press on arrow buttons
 Credits- https://github.com/john-doherty/long-press-event */

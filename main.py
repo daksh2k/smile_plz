@@ -49,6 +49,7 @@ def getquote():
     author = "–"+quote["quoteAuthor"].strip()
     # author= textmanup(author,typem="bold")
     tweettopublish=quote["quoteText"].strip()+"\n"+author
+    print(f"{current_time()}Returned quote from API-:\n{tweettopublish}")
     return tweettopublish
   
 # Follow back every user

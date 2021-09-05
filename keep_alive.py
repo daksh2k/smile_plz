@@ -6,7 +6,7 @@ import os
 import re
 import twitter
 
-app = Flask(__name__,template_folder='templates',static_folder='static')
+app = Flask(__name__)
 Compress(app)
 
 # Parse the Log File to get Individual Tweet Sessions
@@ -119,7 +119,9 @@ def log_all_list():
   return render_template("loglist.html",logs_all=get_all()) 
     
 def run():
-  app.run(host=os.environ.get("host","0.0.0.0"), port=8080)
+  port = int(os.environ.get("PORT", 8080))
+  host = os.environ.get("HOST","0.0.0.0")
+  app.run(host=host, port=port)
 
 def keep_alive():
   server = Thread(target=run)

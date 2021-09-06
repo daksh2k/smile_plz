@@ -12,7 +12,7 @@
 <h1 class="text-center text-white">Log {{log_date}}</h1>
 <div class="top-bar">
   <a href = "/log/download/{{ log_date.split(' ')[0].replace('/','_') }}" class="btn btn-info">Download Log</a>
-  <button type="button" class="btn btn-primary log-list-show" onclick="togglelist()">Show All Logs</button>
+  <button type="button" class="btn btn-primary log-list-show">Show All Logs</button>
 </div>
 <div class="container">
   <div class="log-list-container">
@@ -30,10 +30,10 @@
     </div>
 </div>
 <div class="but-sc">
-    <button type="button" class="btn scroll-btn s-up" data-long-press-delay="400" title="Go Up" onclick="scrollBefore()">
+    <button type="button" class="btn scroll-btn s-up" data-long-press-delay="400" title="Go Up">
       <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" width="100%" fill="#FFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14l-6-6z"/></svg>
     </button>
-  <button type="button" class="btn scroll-btn s-down" data-long-press-delay="400" title="Go Down" onclick="scrollNext()">
+  <button type="button" class="btn scroll-btn s-down" data-long-press-delay="400" title="Go Down">
     <svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24" width="100%" fill="#FFF"><path d="M24 24H0V0h24v24z" fill="none" opacity=".87"/><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"/></svg>
   </button>
 </div>

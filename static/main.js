@@ -34,13 +34,18 @@ function updateListClick(){
         if(!$(this).next()[0].contains(evt.target) && !parEle.classList.contains("active"))
           window.location.href = $(this)[0].href
       })
-      $($(parEle).parents()[3]).on('mousemove',(evt) =>{
-        if (evt.target==parEle && !parEle.classList.contains("active"))
-            $(this).addClass("hover-color")
-        else
-            $(this).removeClass("hover-color")
-      })
     })
+  $(document).on('mousemove',(evt) =>{
+    $(".list-group-item").each( function(){
+      if ($(this)[0]==evt.target && !evt.target.classList.contains("active"))
+        $(this).children().addClass("hover-color")
+    else
+        $(this).children().removeClass("hover-color")
+    })
+  })
+  $(document).on('mouseleave',() =>{
+    $(".link-log").removeClass("hover-color")
+  })
 }
 
 /* Add event listener for long press on arrow buttons
@@ -54,6 +59,10 @@ $(".s-down").on('long-press',(evt) => {
   scrollToBottom()
 });
 
+// Add Event Listener for click on arrow buttons
+$(".s-up").on('click',scrollBefore);
+$(".s-down").on('click', scrollNext);
+
 // Add Event Listener for right click on arrow buttons (easier on desktop)
 $(".s-up").on('contextmenu',(evt) => {
   evt.preventDefault() 
@@ -63,6 +72,8 @@ $(".s-down").on('contextmenu', (evt) => {
   evt.preventDefault() 
   scrollToBottom()
 });
+
+$(".log-list-show").on('click',togglelist)
 
 // Hide scroll buttons according to scroll position
 $(document).on("scroll",updateScrollButtons)

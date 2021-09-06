@@ -49,7 +49,7 @@ def getquote():
     author = "–"+quote["quoteAuthor"].strip()
     # author= textmanup(author,typem="bold")
     tweettopublish=quote["quoteText"].strip()+"\n"+author
-    print(f"{current_time()}Returned quote from API-:\n{tweettopublish}")
+    print(f"{rq.current_time()}Returned quote from API-:\n{tweettopublish}")
     return tweettopublish
   
 # Follow back every user
@@ -99,6 +99,14 @@ def main():
   Execute keep_alive for showing twitter profile and displaying logs
   The keep_alive function along with Uptime Robot helps keep the replit running.
   See https://bit.ly/3h5ZS09 for more detials!
+
+  If logging is on then redirect the default stdout to a log file,
+  according to the day and delete any log files older than 14 days.
+
+  After tweeting insert the tweets in a secondary collection
+  in the db and print/log those tweets.
+  Reset the stdout to default if previously changed.
+  Update the current day's log/key in replit db and sleep.
   """
   try:
     api= twitter.create_api()
@@ -119,10 +127,6 @@ def main():
   while True:
     del_old = False 
     if os.environ.get("logging","off")=="on":
-      """
-      If logging is on then redirect the default stdout to a log file
-      according to the day and delete any log files older than 14 days.
-      """
       log_date = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5,minutes=30))) # Get date for IST
       old_log  = f"Logs/log_{(log_date-datetime.timedelta(days=15)).strftime('%d_%m_%y')}.txt"
       curr_log = f"Logs/log_{log_date.strftime('%d_%m_%y')}.txt"
@@ -137,7 +141,7 @@ def main():
       print(f"{rq.current_time()}Removed old log! {old_log}")
     try:
       follow_followers(api)
-    except:
+    except Exception:
       pass
     try:
       if os.environ.get("quote_method","db")=="db":
@@ -151,12 +155,6 @@ def main():
       quote = getquote()
       tweet,t2 = tq.tweet_dbdown(api,quote)
     try:
-      """
-      Insert the tweeted tweets in a secondary collection in the db
-      and print/log any tweets.
-      Reset the stdout to default if previously changed.
-      Update the current day's log/key in replit db.
-      """
       if os.environ.get("quote_method","db")=="db":
         insert_tweet(tweet,client)
       print(f"{rq.current_time()}Tweet Sent-:\nTweetId: {tweet.id}\n{tweet.full_text}")

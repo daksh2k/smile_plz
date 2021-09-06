@@ -95,6 +95,10 @@ def main(client):
     Use the aggregate function of MongoDB to get a document/quote
     from db. The aggregate function gets a random quote from the db which has
     the parameter tcount=0 i.e the quote which has not been used before.
+
+    If the quote after parsing and formatting is larger than 560 chars
+    i.e. not able to tweet even after dividing in 2 parts
+    then get again recursively till it is less than 560 chars
     """
     db = client.tweetbot
     coll = db.quotes500k
@@ -110,11 +114,6 @@ def main(client):
         except Exception as e:
             print(f"{current_time()}Error in Updating tcount in db\n{current_time()}{e}")
     if len(quote)>560:
-        """
-        If the quote after parsing and formatting is larger than 560 chars
-        i.e. not able to tweet even after dividing in 2 parts
-        then get again recursively till it is less than 560 chars
-        """
         sleep(2)
         print(f"{current_time()}Very long quote! {len(quote)} words\n{current_time()}Getting again!")
         return main(client)

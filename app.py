@@ -11,7 +11,7 @@ def index():
 
 def main():
     port = int(os.environ.get("PORT", 5000))
-    host = os.environ.get("HOST","0.0.0.0")
+    host = os.environ.get("HOST","localhost")
     app.run(host=host,port=port,debug=False)
 
 if __name__=="__main__":

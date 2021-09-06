@@ -35,7 +35,7 @@
   - platform_type   = "local,replit"  (`local` by default )
   - twitter_profile = "twitter profile url" (`https://twitter.com/smile_plz12` by default)
   - logging         = "off or on" (`off` by default)
-  - HOST            = "Host url" (`0.0.0.0` by default)
+  - HOST            = "Host url" (`localhost` by default)
   - PORT            = "Port number"(`8080` ny default)
 
 - ### Or set these variables in your deployed environment.

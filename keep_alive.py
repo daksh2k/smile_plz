@@ -121,7 +121,7 @@ def log_all_list():
 # For running the Flask application
 def run():
   port = int(os.environ.get("PORT", 8080))
-  host = os.environ.get("HOST","0.0.0.0")
+  host = os.environ.get("HOST","localhost")
   app.run(host=host, port=port)
 
 # Run in a separate thread for running multiple processes

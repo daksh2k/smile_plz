@@ -1,4 +1,12 @@
 # Smile Please
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/daksh2k/smile_plz/blob/master/LICENSE)
+[![CodeFactor](https://www.codefactor.io/repository/github/daksh2k/smile_plz/badge/master)](https://www.codefactor.io/repository/github/daksh2k/smile_plz/overview/master)
+[![GitHub last commit](https://img.shields.io/github/last-commit/daksh2k/smile_plz)](https://github.com/daksh2k/smile_plz)
+[![GitHub issues](https://img.shields.io/github/issues/daksh2k/smile_plz)](https://github.com/daksh2k/smile_plz/issues)
+[![Total Lines Of Code](https://tokei.rs/b1/github/daksh2k/smile_plz)](https://github.com/daksh2k/smile_plz)
+[![GitHub repo size](https://img.shields.io/github/repo-size/daksh2k/smile_plz)](https://github.com/daksh2k/smile_plz)
+[![GitHub top language](https://img.shields.io/github/languages/top/daksh2k/smile_plz)](https://github.com/daksh2k/smile_plz) 
+
  Twitter bot which tweets a new random quote hourly.
  Deployed on **[Replit](https://www.replit.com/@smileplz/smile-plz)**.
 

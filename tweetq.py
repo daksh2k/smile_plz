@@ -22,13 +22,8 @@ def tweet_with_repl(api,q1,q2):
          q2 = last_word + " " + q2
     if replaced_words:
       print(f"{current_time()}Words added to second Tweet: {', '.join(replaced_words)}")
-    q1 = q1.strip()
-    q2 = q2.strip()
-    try: 
-      q1 = reduce_size(q1)
-      q2 = reduce_size(q2)
-    except Exception:
-      pass  
+    q1 = reduce_size(q1.strip())
+    q2 = reduce_size(q2.strip()) 
     if len(q2)<30:
       q1=q1[:280].strip()
     else:

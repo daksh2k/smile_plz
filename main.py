@@ -141,7 +141,7 @@ def main():
       print(f"{rq.current_time()}Removed old log! {old_log}")
     try:
       follow_followers(api)
-    except Exception:
+    except tweepy.TweepError:
       pass
     try:
       if os.environ.get("quote_method","db")=="db":
